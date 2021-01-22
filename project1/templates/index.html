@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+</head>
+<body>
+	<div class="box">
+		<img src="{{ url_for('static', filename='img/head.jpg') }}" >
+		<p>name:{{ name }}</p>
+		<p>age:{{ age }}</p>
+	</div>
+</body>
+</html>
