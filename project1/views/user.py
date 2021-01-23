@@ -6,7 +6,7 @@ reversion:1.0
 file_name:user
 """
 
-from flask import render_template, request, session, redirect, url_for, Blueprint
+from flask import render_template, request, session, redirect, url_for, Blueprint, flash
 
 userbp = Blueprint("user", __name__)
 
@@ -31,6 +31,7 @@ def login():
             if u["email"] == email and u["password"] == password:
                 session["user"] = email
                 return redirect(url_for("main.index"))
+        flash("用户名或密码错误！")
         return redirect(url_for("user.login"))
 
 
@@ -48,7 +49,14 @@ def regist():
         email = request.form.get("email")
         password = request.form.get("password")
         password2 = request.form.get("password2")
-        global users
+        for u in users:
+            if u["email"] == email:
+                flash("邮箱已注册")
+                return redirect(url_for("user.regist"))
+        if password != password2:
+            flash("密码不一致")
+            return redirect(url_for("user.regist"))
+
         users.append({
             "email": email,
             "password": password
