@@ -1,6 +1,8 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 app = Flask(__name__)
 
+
+app.secret_key = "asdasd"
 
 book = {
     "name": "斗破苍穹",
@@ -26,25 +28,20 @@ book = {
 }
 users = [
     {
-        "email": "496575233@qq.com",
+        "email": "751428881@qq.com",
         "password": "123456"
     }
 ]
-currentuser = None
 
 
 @app.route("/")
 def index():
-    global currentuser
-    user = currentuser
     articles = book["articles"]
     return render_template("index.html", **locals())
 
 
 @app.route("/<int:pk>")
 def detail(pk):
-    global currentuser
-    user = currentuser
     article = None
     for a in book["articles"]:
         if a["id"] == pk:
@@ -54,7 +51,6 @@ def detail(pk):
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
-    global currentuser
     if request.method == "GET":
         return render_template("login.html", **locals())
     elif request.method == "POST":
@@ -63,18 +59,14 @@ def login():
         password = request.form.get("password")
         for u in users:
             if u["email"] == email and u["password"] == password:
-                currentuser = u
-                print(currentuser,"====")
+                session["user"] = email
                 return redirect(url_for("index"))
-        print("登录失败")
         return redirect(url_for("login"))
 
 
 @app.route("/logout")
 def logout():
-    global currentuser
-    currentuser = None
-    user = currentuser
+    session.pop("user")
     return redirect(url_for("index"))
 
 
